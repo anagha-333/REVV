@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REVV - Log in to your account</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Light gray background to match the image */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+            font-family: Arial, sans-serif; /* A common sans-serif font, similar to the image */
+        }
+        .login-card {
+            background-color: #ffffff;
+            border-radius: 8px; /* Slightly rounded corners */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            padding: 40px; /* Internal padding */
+            width: 100%;
+            max-width: 450px; /* Fixed maximum width for the form container */
+            text-align: center;
+        }
+        .login-card .logo {
+            margin-bottom: 30px; /* Space below the logo */
+        }
+        .login-card .logo img {
+            max-width: 150px; /* Adjust logo size as per image */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .login-card h2 {
+            font-size: 1.8rem; /* Larger heading font size */
+            font-weight: 600; /* Semi-bold */
+            margin-bottom: 10px; /* Space below heading */
+            color: #333; /* Darker text color */
+        }
+        .login-card p.subtitle {
+            color: #666; /* Lighter text color for subtitle */
+            margin-bottom: 30px; /* Space below subtitle */
+            font-size: 0.95rem; /* Slightly smaller font size */
+        }
+        .form-label {
+            font-weight: 500; /* Medium font weight */
+            color: #555; /* Label color */
+            text-align: left; /* Align labels to the left */
+            display: block; /* Make labels block-level for proper spacing */
+            margin-bottom: 5px; /* Space below label */
+        }
+        .form-control {
+            border-radius: 6px; /* Rounded input fields */
+            padding: 12px 15px; /* Ample padding inside inputs */
+            font-size: 1rem; /* Standard font size for input text */
+            border: 1px solid #ced4da; /* Light gray border */
+            height: auto; /* Allow height to adjust with padding */
+        }
+        .form-control:focus {
+            border-color: #000080; /* Dark blue border on focus, similar to button */
+            box-shadow: 0 0 0 0.25rem rgba(0, 0, 128, 0.25); /* Dark blue shadow on focus */
+            outline: 0; /* Remove default outline */
+        }
+        .input-group-password .form-control {
+            border-right: none; /* No border between input and icon */
+        }
+        .input-group-password .input-group-text {
+            background-color: #fff; /* White background for icon part */
+            border-left: none; /* No border between input and icon */
+            border-top-right-radius: 6px; /* Match input border-radius */
+            border-bottom-right-radius: 6px; /* Match input border-radius */
+            border: 1px solid #ced4da; /* Light gray border */
+            cursor: pointer; /* Indicate clickability */
+            padding: 12px 15px; /* Match input padding */
+        }
+        .btn-primary {
+            background-color: #000080; /* Dark blue button background */
+            border-color: #000080; /* Dark blue button border */
+            padding: 12px 0; /* Vertical padding, full width */
+            font-size: 1.1rem; /* Larger font for button text */
+            font-weight: 600; /* Semi-bold button text */
+            border-radius: 6px; /* Rounded button corners */
+            width: 100%; /* Full width button */
+            margin-top: 20px; /* Space above the button */
+        }
+        .btn-primary:hover {
+            background-color: #000066; /* Slightly darker blue on hover */
+            border-color: #000066; /* Match hover color */
+        }
+        .form-check {
+            text-align: left;
+            margin-top: 15px; /* Space above checkbox/link row */
+            display: flex; /* Use flexbox for horizontal alignment */
+            align-items: center; /* Vertically align items */
+            justify-content: space-between; /* Push "Keep me signed in" left and "Forgot password" right */
+        }
+        .form-check-input {
+            margin-right: 8px; /* Space between checkbox and label */
+            border-radius: 4px; /* Slightly rounded checkbox */
+            width: 1.1em; /* Adjust checkbox size */
+            height: 1.1em; /* Adjust checkbox size */
+            flex-shrink: 0; /* Prevent checkbox from shrinking */
+        }
+        .form-check-label {
+            color: #555; /* Label color */
+            font-size: 0.9rem; /* Smaller font for checkbox label */
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+        .forgot-password-link {
+            color: #0d6efd; /* Standard Bootstrap primary blue for link */
+            text-decoration: none; /* No underline by default */
+            font-size: 0.9rem; /* Smaller font for link */
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+        .forgot-password-link:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
+        .copyright {
+            color: #888; /* Gray color for copyright */
+            font-size: 0.85rem; /* Smaller font for copyright */
+            margin-top: 30px; /* Space above copyright */
+        }
+        /* Validation Feedback Styles */
+        .password-feedback {
+            font-size: 0.85rem;
+            color: #dc3545; /* Bootstrap danger color for error */
+            text-align: left;
+            margin-top: 5px;
+            display: none; /* Hidden by default */
+        }
+        .password-feedback ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 0;
+        }
+        .password-feedback li {
+            margin-bottom: 3px;
+        }
+        .password-feedback li.valid {
+            color: #28a745; /* Bootstrap success color */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo">
+            <img src="webfonts/logo.svg" alt="REVV Logo">
+        </div>
+        <h2>Log in to your account</h2>
+        <p class="subtitle">Welcome! Sign in with your organizational account.</p>
+
+        <form id="loginForm" novalidate>
+            <div class="mb-3 text-start">
+                <label for="emailAddress" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="emailAddress" placeholder="Email Address" required>
+                <div class="invalid-feedback">
+                    Please enter a valid email address.
+                </div>
+            </div>
+            <div class="mb-3 text-start">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-group input-group-password">
+                    <input type="password" class="form-control" id="password" placeholder="Password" required>
+                    <span class="input-group-text" id="togglePassword">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.12 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                        </svg>
+                    </span>
+                </div>
+                <div class="password-feedback" id="passwordFeedback">
+                    <ul class="mb-0">
+                        <li id="lengthCheck">Min 8 characters</li>
+                        <li id="specialCharCheck">At least one special character</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-check">
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" class="form-check-input" id="keepSignedIn">
+                    <label class="form-check-label" for="keepSignedIn">Keep me signed in</label>
+                </div>
+                <a href="#" class="forgot-password-link">Forgot your password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign in</button>
+        </form>
+
+        <p class="copyright">&copy; <span id="currentYear"></span> REVV. All rights reserved.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const loginForm = document.getElementById('loginForm');
+            const passwordFeedback = document.getElementById('passwordFeedback');
+            const lengthCheck = document.getElementById('lengthCheck');
+            const specialCharCheck = document.getElementById('specialCharCheck');
+            const emailInput = document.getElementById('emailAddress');
+            const keepSignedInCheckbox = document.getElementById('keepSignedIn'); // Get checkbox
+
+            // Set current year for copyright
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Password visibility toggle
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                // Optionally change icon visually if you have two SVG states
+            });
+
+            // Password validation function (simplified)
+            function validatePassword(password) {
+                const minLength = password.length >= 8;
+                const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password);
+
+                lengthCheck.classList.toggle('valid', minLength);
+                specialCharCheck.classList.toggle('valid', hasSpecialChar);
+
+                if (password.length > 0) {
+                    passwordFeedback.style.display = 'block';
+                } else {
+                    passwordFeedback.style.display = 'none';
+                }
+
+                return minLength && hasSpecialChar;
+            }
+
+            // Real-time password validation feedback
+            passwordInput.addEventListener('input', function() {
+                validatePassword(this.value);
+                // Remove invalid state if user starts typing and it becomes valid
+                if (validatePassword(this.value)) {
+                    this.classList.remove('is-invalid');
+                }
+            });
+
+            // Form submission validation
+            loginForm.addEventListener('submit', function (event) {
+                event.preventDefault(); // Always prevent default for client-side control
+                event.stopPropagation(); // Stop event propagation
+
+                let isValid = true;
+
+                // Validate Email
+                if (!emailInput.checkValidity()) {
+                    emailInput.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    emailInput.classList.remove('is-invalid');
+                }
+
+                // Validate Password
+                const isPasswordValid = validatePassword(passwordInput.value);
+                if (!isPasswordValid) {
+                    passwordInput.classList.add('is-invalid');
+                    passwordFeedback.style.display = 'block'; // Ensure feedback is visible on submit
+                    isValid = false;
+                } else {
+                    passwordInput.classList.remove('is-invalid');
+                    passwordFeedback.style.display = 'none'; // Hide feedback if valid on submit
+                }
+
+                if (isValid) {
+                   
+                    alert('Form submitted successfully! (Fields will now be cleared)');
+
+                  
+                    emailInput.value = '';
+                    passwordInput.value = '';
+                    keepSignedInCheckbox.checked = false; // Uncheck the checkbox
+
+                    
+                    loginForm.classList.remove('was-validated');
+                    emailInput.classList.remove('is-invalid'); // Ensure no invalid state remains
+                    passwordInput.classList.remove('is-invalid'); // Ensure no invalid state remains
+                    passwordFeedback.style.display = 'none'; // Hide password feedback
+
+                  
+                } else {
+                    // If validation fails, apply Bootstrap's was-validated class
+                    loginForm.classList.add('was-validated');
+                }
+            });
+
+           
+            emailInput.addEventListener('input', function() {
+                if (emailInput.checkValidity()) {
+                    emailInput.classList.remove('is-invalid');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
