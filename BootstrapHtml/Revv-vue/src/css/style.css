@@ -91,6 +91,7 @@
   color: #ffffff; /* Icon changes to white on hover */
 }
 
+
 .card-hover img {
   max-height: 250px;
   object-fit: cover;

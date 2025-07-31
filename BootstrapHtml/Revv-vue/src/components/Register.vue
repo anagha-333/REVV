@@ -1,24 +1,27 @@
 <template>
+  
   <div class="login-card">
     <div class="logo">
       <img src="@/assets/logo.svg" alt="REVV Logo" />
     </div>
-    <h2>Log in to your account</h2>
-    <p class="subtitle">Welcome! Sign in with your organizational account.</p>
+    <h2>Create an Account</h2>
+    <p class="subtitle">Register with a role to get started.</p>
 
     <Form @submit="onSubmit" :validation-schema="schema">
+      <!-- Username -->
       <div class="mb-3 text-start">
-        <label for="email" class="form-label">Email Address</label>
+        <label for="username" class="form-label">Username</label>
         <Field
-          id="email"
-          name="email"
-          type="email"
+          id="username"
+          name="username"
+          type="text"
           class="form-control"
-          placeholder="Email Address"
+          placeholder="Enter username"
         />
-        <ErrorMessage name="email" class="invalid-feedback" />
+        <ErrorMessage name="username" class="invalid-feedback" />
       </div>
 
+      <!-- Password -->
       <div class="mb-3 text-start">
         <label for="password" class="form-label">Password</label>
         <div class="input-group input-group-password">
@@ -27,14 +30,13 @@
             name="password"
             id="password"
             class="form-control"
-            placeholder="Password"
+            placeholder="Enter password"
           />
           <span class="input-group-text" @click="togglePassword" style="cursor: pointer">
-            <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'" />
+            <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
           </span>
         </div>
         <ErrorMessage name="password" class="invalid-feedback" />
-
         <div class="password-feedback" v-if="values.password">
           <ul class="mb-0">
             <li :class="{ valid: values.password.length >= 8 }">Min 8 characters</li>
@@ -45,66 +47,76 @@
         </div>
       </div>
 
-      <div class="form-check">
-        <div class="d-flex align-items-center">
-          <input v-model="keepSignedIn" type="checkbox" class="form-check-input" id="keepSignedIn" />
-          <label class="form-check-label" for="keepSignedIn">Keep me signed in</label>
-        </div>
-        <a href="#" class="forgot-password-link">Forgot your password?</a>
-      </div>
+  
+<div class="mb-3 text-start">
+  <label for="role" class="form-label">Role</label>
+  <Field
+    id="role"
+    name="role"
+    type="text"
+    class="form-control"
+    placeholder="Enter role (e.g., Admin or User)"
+  />
+  <ErrorMessage name="role" class="invalid-feedback" />
+</div>
 
-      <button type="submit" class="btn btn-primary">Sign in</button>
+
+      <!-- Submit -->
+      <button type="submit" class="btn btn-primary w-100">Register</button>
     </Form>
 
-    <p class="copyright">&copy; {{ new Date().getFullYear() }} REVV. All rights reserved.</p>
+    <p class="copyright mt-4">&copy; {{ new Date().getFullYear() }} REVV. All rights reserved.</p>
   </div>
+  
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from '../api' // your axios instance or replace with full URL
 import { Form, Field, ErrorMessage, useForm } from 'vee-validate'
 import * as yup from 'yup'
-import axios from '../api'
-import { useAuthStore } from '../stores/auth'; // <-- Pinia store
 
 
 const router = useRouter()
 const showPassword = ref(false)
-const keepSignedIn = ref(false)
 const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/
+
+const schema = yup.object({
+  username: yup.string().required('Username is required'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Minimum 8 characters')
+    .matches(specialCharRegex, 'Must include a special character'),
+  role: yup.string().required('Role is required')
+})
+
 const { values } = useForm()
-const auth = useAuthStore(); // <-- initialize store
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value
 }
 
-const schema = yup.object({
-  email: yup.string().required('Email is required').email('Must be a valid email'),
-  password: yup
-    .string()
-    .required('Password is required')
-    .min(8, 'Minimum 8 characters')
-    .matches(specialCharRegex, 'At least one special character')
-})
-
 const onSubmit = async (values: any) => {
+  const payload = {
+    Username: values.username,
+    Password: values.password,
+    Role: values.role
+  }
+  console.log("Register payload:", payload)
   try {
-    const response = await axios.post('http://localhost:5063/api/Auth/login', {
-      username: values.email,
-      password: values.password,
-    });
-    const { token, username } = response.data;
-
-    const authStore = useAuthStore()
-    authStore.login(token, username)
-
-    router.push({ path: '/welcome', query: { email: values.email } });
+    const response = await axios.post('http://localhost:5063/api/Auth/register', payload)
+    alert('Registration successful!')
+    router.push('/login')
   } catch (err: any) {
-    alert(err.response?.data?.message || 'Invalid email or password');
+    console.error("Registration failed:", err.response?.data)
+    const errs = err.response?.data?.errors
+    const msg = errs ? JSON.stringify(errs) : err.response?.data || err.message
+    alert(`Registration failed: ${msg}`)
   }
 }
+
 </script>
 
 <style scoped>
@@ -163,27 +175,10 @@ h2 {
   font-size: 1.1rem;
   font-weight: 600;
   border-radius: 6px;
-  width: 100%;
-  margin-top: 20px;
 }
 .btn-primary:hover {
   background-color: #000066;
   border-color: #000066;
-}
-.form-check {
-  text-align: left;
-  margin-top: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.forgot-password-link {
-  color: #0d6efd;
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-.forgot-password-link:hover {
-  text-decoration: underline;
 }
 .invalid-feedback {
   display: block;
